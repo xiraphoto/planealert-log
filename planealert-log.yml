@@ -2,8 +2,8 @@ name: PlaneAlert logger
 
 on:
   schedule:
-    - cron: '*/5 * * * *'     # GitHub runs this every 5-15 minutes
-  workflow_dispatch:          # "Run workflow" button
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  PLANEALERT_TZ: Europe/Oslo  # the day starts at midnight in this time zone
+  PLANEALERT_TZ: Europe/Oslo
 
 jobs:
   log:
@@ -33,7 +33,7 @@ jobs:
           gh release download data -p "day-$TODAY.json.gz" -D out || echo "No log yet for $TODAY"
 
       - name: Scan airports
-        run: python3 logger/logger.py out
+        run: python3 logger.py out
 
       - name: Upload log
         env:
@@ -46,14 +46,14 @@ jobs:
             if [[ "$d" < "$CUT" ]]; then gh release delete-asset data "$a" -y; fi
           done
 
-      - name: Daily heartbeat (keeps the schedule from being paused)
+      - name: Daily heartbeat
         run: |
           D=$(date -u +%F)
-          if [ "$(cat logger/heartbeat.txt 2>/dev/null)" != "$D" ]; then
-            echo "$D" > logger/heartbeat.txt
+          if [ "$(cat heartbeat.txt 2>/dev/null)" != "$D" ]; then
+            echo "$D" > heartbeat.txt
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add logger/heartbeat.txt
+            git add heartbeat.txt
             git commit -m "heartbeat $D"
             git push || echo "push failed (will retry next run)"
           fi
