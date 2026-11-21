@@ -1,0 +1,8 @@
+# Airports the cloud logger watches. One ICAO or IATA code per line.
+# Keep this the same as the airports in your PlaneAlert app.
+ENBR   # Bergen
+ENGM   # Oslo
+ENZV   # Stavanger
+EGLL   # London Heathrow
+RJTT   # Tokyo Haneda
+RJAA   # Tokyo Narita
